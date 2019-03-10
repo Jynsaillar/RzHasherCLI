@@ -6,7 +6,7 @@ namespace RzHasherCLI
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            FileManager.RunHasherOnValidFiles(FileManager.ParseCmdArguments(args));
         }
     }
 }
