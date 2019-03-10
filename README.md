@@ -2,7 +2,8 @@
 Command line hasher which hashes file names according to a hash algorithm.
 
 ## TL;DR:
-* Install [.NET Core SDK 2.2](https://dotnet.microsoft.com/download)
+* Install [.NET Core SDK 2.2](https://dotnet.microsoft.com/download) to work on this project or  
+install [.NET Core Runtime](https://dotnet.microsoft.com/download) if you just want to execute the program
 * Clone repository: `git clone https://github.com/Jynsaillar/RzHasherCLI.git`
 * From the command line, change to the project directory, e.g. `cd C:\projects\RzHasherCLI`
 * Run the application with valid parameters using .NET Core: `dotnet run -- -h -d "C:\unhashedfiles"`
