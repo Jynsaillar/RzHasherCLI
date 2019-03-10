@@ -41,16 +41,26 @@ namespace RzHasherCLI
 
             HashSet<string> files = new HashSet<string>();
             HashSet<string> directories = new HashSet<string>();
-            HashSet<string> validFlags = new HashSet<string>() { "-f", "-d", "-h", "-u" };
+            HashSet<string> validPathFlags = new HashSet<string>() { "-f", "-d" };
             string lastArgument = string.Empty;
             bool hash = true;
             foreach (var argument in args)
             {
                 // Skips all arguments that are flags to process them in the next iteration.
-                if (validFlags.Contains(argument))
+                if (validPathFlags.Contains(argument))
                 {
                     lastArgument = argument;
                     continue;
+                }
+
+                switch (argument)
+                {
+                    case "-h":
+                        hash = true;
+                        break;
+                    case "-u":
+                        hash = false;
+                        break;
                 }
 
                 if (lastArgument != string.Empty)
@@ -63,15 +73,10 @@ namespace RzHasherCLI
                         case "-d":
                             directories.Add(argument);
                             break;
-                        case "-h":
-                            hash = true;
-                            break;
-                        case "-u":
-                            hash = false;
-                            break;
                     }
                 }
 
+                lastArgument = argument;
             }
 
             return Tuple.Create(files, directories, hash);
@@ -98,6 +103,10 @@ namespace RzHasherCLI
 
                 RunHasherOnValidFiles(unsortedFiles, hash);
             }
+
+            RunHasherOnValidFiles(files, hash);
+
+            Console.WriteLine(hash ? "Finished hashing files." : "Finished unhashing files.");
         }
 
         private static void RunHasherOnValidFiles(HashSet<string> files, bool hash)
@@ -111,10 +120,17 @@ namespace RzHasherCLI
                 if (!File.Exists(file))
                 {
                     Console.WriteLine($"{file} is not a valid file, skipping.");
+                    continue;
                 }
 
                 oldFileInfo = new FileInfo(file);
                 newFileName = hash ? RappelzHasher.Encrypt(oldFileInfo.Name) : RappelzHasher.Decrypt(oldFileInfo.Name);
+
+                if (string.IsNullOrEmpty(newFileName))
+                {
+                    continue;
+                }
+
                 newFilePath = Path.Join(oldFileInfo.Directory.FullName, newFileName);
                 File.Move(file, newFilePath);
             }
